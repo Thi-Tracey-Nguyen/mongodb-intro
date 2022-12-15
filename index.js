@@ -1,5 +1,5 @@
 import express from 'express'
-
+import mongoose from 'mongoose'
 const categories = ['Food', 'Coding', 'Work', 'Other']
 
 const entries = [
@@ -7,6 +7,16 @@ const entries = [
     {category: 'Coding', content: 'Express is cool!'}, 
     {category: 'Work', content: 'Another day, another dollar'}
 ]
+
+// returns a promise so the rest of the program doesn't have to wait for the connection to be established
+mongoose.connect('mongodb+srv://thinguyen:jetmoon@cluster0.bxuyw2e.mongodb.net/journal?retryWrites=true&w=majority')
+  .then((m) => console.log(mongoose.connection.readyState === 1 ? 'Mongoose connected' : 'Mongoose failed to connect'))
+  .catch((err) => console.log(err))
+
+const entriesSchema = new mongoose.Schema({
+    category: { type: String, required: true },
+    content: { type: String, required: true }
+})
 
 const app = express()
 const port = 4001
