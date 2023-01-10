@@ -26,7 +26,7 @@ router.put('/:id', async (req, res) => {
     const newEntry = { category, content } 
 
     try {
-        const entry = await EntryModel.findByIdAndUpdate(req.params.id, newEntry, { returnDocument: 'after' })
+        const entry = await EntryModel.findByIdAndUpdate(req.params.id, newEntry, { returnDocument: 'after' }).populate('category')
 
         if (entry) {
             res.send(entry)
@@ -64,7 +64,7 @@ router.post('/', async (req, res) => {
 
         // 2. Push the new entry to the entries array
         // entries.push(newEntry) //old way, before mongoose
-        const insertedEntry = await EntryModel.create(newEntry)
+        const insertedEntry = await (await EntryModel.create(newEntry)).populate('category')
 
         // 3. Send the new entry with 201 status
         res.status(201).send(insertedEntry)

@@ -1,5 +1,7 @@
 import mongoose from 'mongoose'
-// const categories = ['Food', 'Coding', 'Work', 'Other']
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 async function dbClose() {
     await mongoose.connection.close()
@@ -8,7 +10,7 @@ async function dbClose() {
 
 // returns a promise so the rest of the program doesn't have to wait for the connection to be established
 try {
-    const m = await mongoose.connect('mongodb+srv://thinguyen:jetmoon@cluster0.bxuyw2e.mongodb.net/journal?retryWrites=true&w=majority')
+    const m = await mongoose.connect(process.env.ATLAS_DB_URL)
     console.log(mongoose.connection.readyState === 1 ? 'Mongoose connected' : 'Mongoose failed to connect')
 }
 catch (err) {
