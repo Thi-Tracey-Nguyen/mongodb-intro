@@ -59,13 +59,17 @@ router.post('/', async (req, res) => {
     try {
         // 1. Create a new entry object with values passed in from the request 
         const { category, content } = req.body
+        // get the category object from the category (name)
+        const categoryObject = await CategoryModel.findOne({ name: category})
+        
         // Sanitize the request 
-        const newEntry = { category, content } // only works if the key can the referenced value have the same name 
+        const newEntry = { category: categoryObject._id, content } 
+        // const newEntry = { category, content } only works if the key can the referenced value have the same name 
 
         // 2. Push the new entry to the entries array
         // entries.push(newEntry) //old way, before mongoose
-        const insertedEntry = await (await EntryModel.create(newEntry)).populate('category')
-
+        const insertedEntry = await EntryModel.create(newEntry)
+        await insertedEntry.populate({path: 'category', select: 'name'})
         // 3. Send the new entry with 201 status
         res.status(201).send(insertedEntry)
     }
